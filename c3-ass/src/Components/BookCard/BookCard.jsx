@@ -1,10 +1,7 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { useEffect,useState } from "react";
-import axios from "axios";
-import { useParams } from "react-router";
 
-export const BookCard = () => {
+export const BookCard = ({id,imageUrl,price,title}) => {
   // Bookcard is a card looking component, that is also a 'Link' for react-router
   //  it's basically shows one books information.
   // You can style custom tags with styled components in following way:
@@ -17,50 +14,23 @@ export const BookCard = () => {
   //  Image of the book
   //  title of the book. h2 with classname 'title'
   //  price of book with class 'price'
-  //
-  // rough example:
-  // <YourStyledLink to={}>
-  //    title, image price etc here
-  // </YourStyledLink>
-
-
-  const {id}=useParams();
-
-  const [bookdata,setbookdata]=useState([])
-
-
-console.log(id)
-  useEffect(()=>{
-   axios.get(`http://localhost:8080/Books/?id=${id}`)
-   .then(function (response) {
-     // handle success
+  const Main = styled.div`
+    border:1px solid black;
+    width:200px;
+    height:200px;
+    text-align: center;
     
-     let data=response.data
-console.log(data)
-     setbookdata([...data])
-   })
-   .catch(function (error) {
-     // handle error
-     console.log(error);
-   })
-   
-  },[id])
+  `;
 
-return <div>
-  {bookdata.map((book)=>{
-    return <div>
-      <img src={book.imageUrl} alt="" />
-      <h2>{book.title}</h2>
-      <p>{book.description}</p>
-      <p>{book.price}</p>
-      <p>{book.section}</p>
-      <p>{book.author}</p>
-    </div>
-  })}
-
-</div>
-
-
-
-
+  return (
+    <Link className="bookCard" to={`/books/${id}`}>
+    <Main>
+      <h2 classname="title">{title}</h2>
+      <div classname="price">{price}</div>
+      <img classname="image" src={imageUrl} alt="img" style={{width:"200px",height:"100px"}} />
+      <div classname="id">{id}</div>
+    </Main>
+    </Link>
+  )
+  
 };

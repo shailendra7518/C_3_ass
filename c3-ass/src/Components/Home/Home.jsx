@@ -1,59 +1,56 @@
 import { BookCard } from "../BookCard/BookCard";
 import { SortAndFilterButtons } from "../SortAndFilterButtons/SortAndFilterButtons";
-import styled from 'styled-components'
-import { useEffect, useState } from "react";
+import styled from "styled-components"
+import { useState } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 
 export const Home = () => {
+  const [books,setBooks]=useState([])
   // get all books when user lands on the page
   // populate them as mentioned below
+  useEffect(()=>{
+    getdata()
+    
+  },[])
+
+  const getdata=()=>{
+    axios.get("http://localhost:8080/books").then((res)=>{
+      setBooks(res.data)
+      
+    })
+  }
 
   const Main = styled.div`
-    /* Apply some responsive styling to children */
-  `;
-
-const [bookdata,setbookdata]=useState([])
-
-
-
-   useEffect(()=>{
-    axios.get('http://localhost:8080/Books')
-    .then(function (response) {
-      // handle success
-     
-      let data=response.data
-
-      setbookdata([...data])
-    })
-    .catch(function (error) {
-      // handle error
-      console.log(error);
-    })
+    border:1px solid black;
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
     
-   },[])
+  `;
+  const handleSort=(data)=>{
+    setBooks([...data])
 
-console.log("outer",bookdata)
-
+  }
+  
   return (
     <div className="homeContainer">
       <h2 style={{ textAlign: "center" }}>Home</h2>
       <SortAndFilterButtons
-        handleSort={
-          "give handleSort function to this component, that sorts books"
+        handleSort={   //propse
+          handleSort
         }
+        books={books}
       />
-
-      <Main className="mainContainer">
-       {bookdata.map((book)=>{
        
-       return <div>
-         <img src={book.imageUrl} alt="" />
-         <h3>{book.title}</h3>
-         <h4>{book.price}</h4>
-
-       </div>
-
-       })}
+      <Main className="mainContainer">
+      {books.map((el)=><BookCard key={el.id} id={el.id} imageUrl={el.image_url} title={el.title}  price={el.price} />)}
+        {
+        /* 
+            Iterate over books that you get from network
+            populate a <BookCard /> component
+            pass down books id, imageUrl, title, price and anything else that you want to 
+            show in books Card.
+        */}
       </Main>
     </div>
   );
